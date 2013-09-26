@@ -24,13 +24,12 @@ public class MouseWatcher implements Runnable {
 
 
 		Point oldMouseLocation = new Point(0, 0);
-		Point currentMouseLocation;
 
 		long lastUpdateTime = System.nanoTime();
 
 		while (isWatching) {
 
-			currentMouseLocation = MouseInfo.getPointerInfo().getLocation();
+			Point currentMouseLocation = MouseInfo.getPointerInfo().getLocation();
 
 			if (!oldMouseLocation.equals(currentMouseLocation)) {
 
