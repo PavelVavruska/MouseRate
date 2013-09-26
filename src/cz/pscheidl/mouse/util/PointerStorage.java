@@ -3,7 +3,7 @@ package cz.pscheidl.mouse.util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PointerStorage {
+public abstract class PointerStorage {
 	
 	List<MouseListener> listeners = new ArrayList<MouseListener>();
 	
@@ -11,13 +11,7 @@ public class PointerStorage {
 
 	}
 	
-	public synchronized void mouseRefreshed(long time){
-		
-		for(MouseListener listener : listeners){
-			listener.stateChanged(time);
-		}
-		
-	}
+	public abstract void mouseRefreshed(long time);
 	
 	public synchronized void addMouseListener(MouseListener listener){
 		listeners.add(listener);
