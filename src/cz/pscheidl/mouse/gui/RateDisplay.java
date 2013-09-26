@@ -19,14 +19,13 @@ import cz.pscheidl.mouse.util.MouseListener;
 public class RateDisplay extends JPanel implements MouseListener {
 	private static final long serialVersionUID = -2920615231416789322L;
 	private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
-	private static final int AVG_LENGHT = 100;
+	private static final int MILLISECONDS_IN_SECOND = 1000;
 	
 	Font displayFont;
 	NumberFormat avgFormat;
 	
-	long[] delayList;
+
 	double averageRate = 0;
-	int pointer = 0; 
 	
 	
 
@@ -34,25 +33,21 @@ public class RateDisplay extends JPanel implements MouseListener {
 		setIgnoreRepaint(true);
 		displayFont = Settings.getMouseFont().deriveFont(36.0F);
 		avgFormat = new DecimalFormat("000.##");
-		
-		delayList = new long[AVG_LENGHT];
 	}
 	
+	
 	@Override
-	public void stateChanged(long nanoSeconds) {
-		if(pointer < delayList.length){
-		delayList[pointer] = nanoSeconds;
-		pointer++;
-		} else {
-			long delaySum = 0;
-			for(long delay : delayList){
-				delaySum += delay;
-			}
-			averageRate = 1000 / (((double)delaySum / (double)delayList.length) / NANOSECONDS_IN_MILLISECOND);
-			
-			pointer = 0;
-			paint(getGraphics());
+	public void recieveMouseInfo(long[] mouseArray) {
+		
+		double delaySum = 0;
+		
+		for (long delay : mouseArray){
+			delaySum += delay;
 		}
+		
+		averageRate =  MILLISECONDS_IN_SECOND / ((delaySum / mouseArray.length) / NANOSECONDS_IN_MILLISECOND);
+		paint(getGraphics());
+		
 	}
 	
 	@Override

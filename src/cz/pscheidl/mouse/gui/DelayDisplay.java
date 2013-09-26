@@ -20,13 +20,11 @@ public class DelayDisplay extends JPanel implements MouseListener {
 
 	private static final long serialVersionUID = -2920615231416789322L;
 	private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
-	private static final int AVG_LENGHT = 100;
 	Font displayFont;
 	NumberFormat avgFormat;
 	
-	long[] delayList;
+
 	double averageDelay = 0;
-	int pointer = 0; 
 	
 	
 
@@ -34,23 +32,22 @@ public class DelayDisplay extends JPanel implements MouseListener {
 		setIgnoreRepaint(true);
 		displayFont = Settings.getMouseFont().deriveFont(36.0F);
 		avgFormat = new DecimalFormat("00.000");
-		delayList = new long[AVG_LENGHT];
 	}
 
+
+	
 	@Override
-	public void stateChanged(long nanoSeconds) {
-		if(pointer < delayList.length){
-		delayList[pointer] = nanoSeconds;
-		pointer++;
-		} else {
-			long delaySum = 0;
-			for(long delay : delayList){
-				delaySum += delay;
-			}
-			averageDelay = ((double)delaySum / (double)delayList.length) / NANOSECONDS_IN_MILLISECOND;
-			pointer = 0;
-			paint(getGraphics());
+	public void recieveMouseInfo(long[] mouseArray) {
+		
+		double delaySum = 0;
+		
+		for (long delay : mouseArray){
+			delaySum += delay;
 		}
+		
+		averageDelay = (delaySum / mouseArray.length) / NANOSECONDS_IN_MILLISECOND;
+		paint(getGraphics());
+		
 	}
 	
 	@Override
