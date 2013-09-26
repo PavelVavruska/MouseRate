@@ -11,11 +11,12 @@ public class MouseWatcher implements Runnable {
 	private static MouseWatcher instance = null;
 
 	private Thread mouseWatcherThread;
-	private boolean isWatching = false;
-	private PointerStorage storage = new AvgPointerStorage();
+	private boolean isWatching;
+	private PointerStorage storage;
 
 	private MouseWatcher() {
-		isWatching = true;
+		isWatching = false;
+		storage = new AvgPointerStorage();
 	}
 
 	@Override
