@@ -81,14 +81,17 @@ public class Mouse extends JFrame {
 		addListeners();
 		
 		
+		MouseWatcher watcher = MouseWatcher.getInstance();		
+		watcher.getStorage().addMouseListener(delayDisplay);
+		watcher.getStorage().addMouseListener(rateDisplay);
+		
+		watcher.startWatching();
 		
 		/**
 		 * At the end, when all components are initialized, JFrame is made visible.
 		 */
 		setVisible(true);
 				
-		MouseWatcher.getInstance().getStorage().addMouseListener(delayDisplay);
-		MouseWatcher.getInstance().getStorage().addMouseListener(rateDisplay);
 	}
 	
 	/**
