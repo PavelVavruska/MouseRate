@@ -3,68 +3,68 @@ package cz.pscheidl.mouse.hardware;
 import java.awt.MouseInfo;
 import java.awt.Point;
 
+import cz.pscheidl.mouse.util.AvgPointerStorage;
 import cz.pscheidl.mouse.util.PointerStorage;
 
-public class MouseWatcher implements Runnable{
-	
-	private static MouseWatcher instance = null;
-	
-	private Thread mouseWatcherThread;
-	private boolean isRunning = false;
-	private PointerStorage storage = new PointerStorage();
-	
-	
+public class MouseWatcher implements Runnable {
 
-	private MouseWatcher(){
-		mouseWatcherThread = new Thread(this);
-		isRunning = true;
-		mouseWatcherThread.start();
+	private static MouseWatcher instance = null;
+
+	private Thread mouseWatcherThread;
+	private boolean isWatching = false;
+	private PointerStorage storage = new AvgPointerStorage();
+
+	private MouseWatcher() {
+		isWatching = true;
 	}
 
 	@Override
 	public synchronized void run() {
-		
+
+
 		Point oldMouseLocation = new Point(0, 0);
-		Point currentMouseLocation = new Point(0, 0);
+		Point currentMouseLocation;
+
 		long lastUpdateTime = System.nanoTime();
-		long updateDuration = 0;
-		
-		while(isRunning){
-			
+
+		while (isWatching) {
+
 			currentMouseLocation = MouseInfo.getPointerInfo().getLocation();
-			
-			if( !oldMouseLocation.equals(currentMouseLocation) ){
-				updateDuration = System.nanoTime() - lastUpdateTime;
-				lastUpdateTime = System.nanoTime();
+
+			if (!oldMouseLocation.equals(currentMouseLocation)) {
+
+				long currentTime = System.nanoTime();
+				storage.mouseRefreshed(currentTime - lastUpdateTime);
+				lastUpdateTime = currentTime;
 				oldMouseLocation = currentMouseLocation;
-				storage.mouseRefreshed(updateDuration);
 			}
 		}
 	}
-	
-	public synchronized void isRunning(boolean isRunning){
-		if(isRunning == true && mouseWatcherThread.isInterrupted() ){
-			this.isRunning = isRunning;
-		} else if(isRunning == true && mouseWatcherThread.isInterrupted() == true){
+
+	public void startWatching() {
+
+		if (isWatching)
 			return;
-		} else if (isRunning == false &&  mouseWatcherThread.isInterrupted() == false){
-			this.isRunning = isRunning;
-		}
+
+		isWatching = true;
+		mouseWatcherThread = new Thread(this);
+		mouseWatcherThread.start();
+
 	}
 	
-	public boolean getIsRunning(){
-		return isRunning;
+	public boolean isWatching() {
+		return isWatching;
 	}
-	
-	public static MouseWatcher getInstance(){
-		
-		if(instance == null){
+
+	public static MouseWatcher getInstance() {
+
+		if (instance == null) {
 			instance = new MouseWatcher();
 		}
-		
+
 		return instance;
 	}
-	
+
 	public PointerStorage getStorage() {
 		return storage;
 	}
