@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -24,35 +26,34 @@ import cz.pscheidl.mouse.settings.Settings;
 /**
  * Represents <b>main</b> application <b>window</b> and application entry point.<br/>
  * Follows <b>SINGLETON</b> design pattern.
+ * 
  * @author Pavel Pscheidl
- *
+ * 
  */
 public class Mouse extends JFrame {
-	
 
 	private static final long serialVersionUID = -2177780752366304229L;
-	
+
 	private static Mouse instance = null;
-	
+
 	/**
 	 * GUI settings
 	 */
-	
-	Dimension windowSize = new Dimension(600,250);
-	
+
+	Dimension windowSize = new Dimension(600, 250);
+
 	/*
 	 * GUI Components
 	 */
-	
+
 	JPanel basicPanel;
 	JButton closeApp;
 	JLabel hz, ms, hzDescription, msDescription;
 	DelayDisplay delayDisplay;
 	RateDisplay rateDisplay;
-	
-	
-	private Mouse(){
-		
+
+	private Mouse() {
+
 		/**
 		 * Basic window settings
 		 */
@@ -63,184 +64,143 @@ public class Mouse extends JFrame {
 		setLayout(null);
 		setFocusable(true);
 		setIconImage(Settings.getAppicon().getImage());
-		
-		
+
 		/**
-		 * Initialize components
-		 * Basic panel must be always initialized first
+		 * Initialize components Basic panel must be always initialized first
 		 */
 		initializeBasicPanel();
 		initializeCloseApp();
 		initializeLabels();
 		initializeDisplays();
-		
-		
+
 		/**
 		 * Listeners - to - add
 		 */
 		addListeners();
-		
-		
-		MouseWatcher watcher = MouseWatcher.getInstance();		
+
+		MouseWatcher watcher = MouseWatcher.getInstance();
 		watcher.getStorage().addMouseListener(delayDisplay);
 		watcher.getStorage().addMouseListener(rateDisplay);
-		
+
 		watcher.startWatching();
-		
+
 		/**
-		 * At the end, when all components are initialized, JFrame is made visible.
+		 * At the end, when all components are initialized, JFrame is made
+		 * visible.
 		 */
 		setVisible(true);
-				
+
 	}
-	
+
 	/**
-	 * Adds all necessary listeners. All listeners should be initialized and added here.
+	 * Adds all necessary listeners. All listeners should be initialized and
+	 * added here.
 	 */
-	private void addListeners(){
-		
+	private void addListeners() {
+
 		/**
 		 * Closes whole application after pressing ESCAPE KEY
 		 */
-		addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyTyped(KeyEvent e) {
-				
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				
-			}
-			
+		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					exit();
 				}
-				
 			}
 		});
-		
+
 		/**
 		 * Makes this window movable via mouse
 		 */
 		addMouseListener(new MouseDrag(this));
-		
-		
-	}
-	
 
-	private void initializeCloseApp(){
-		
-		ImageIcon closeAppBg = new ImageIcon(getClass().getResource("/cz/pscheidl/mouse/files/closeAppBackground.png"));
+	}
+
+	private void initializeCloseApp() {
+
+		ImageIcon closeAppBg = new ImageIcon(getClass().getResource(
+				"/cz/pscheidl/mouse/files/closeAppBackground.png"));
 		closeApp = new JButton(closeAppBg);
 		closeApp.setBorder(null);
 		closeApp.setPressedIcon(null);
-		closeApp.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {
-				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			
+		closeApp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				exit();
-				
 			}
 		});
 		basicPanel.add(closeApp);
-		closeApp.setBounds(10, 10, closeAppBg.getIconWidth(), closeAppBg.getIconHeight());
-		
-		
+		closeApp.setBounds(10, 10, closeAppBg.getIconWidth(),
+				closeAppBg.getIconHeight());
+
 	}
-	
-	private void initializeBasicPanel(){
+
+	private void initializeBasicPanel() {
 		basicPanel = new JPanel();
 		basicPanel.setSize(windowSize);
 		basicPanel.setBackground(Settings.getBgcolor());
 		basicPanel.setLayout(null);
 		add(basicPanel);
-		
+
 	}
-	
-	private void initializeLabels(){
-		
+
+	private void initializeLabels() {
+
 		hz = new JLabel("Hz");
 		hz.setFont(Settings.getMouseFont());
 		basicPanel.add(hz);
 		hz.setForeground(Color.WHITE);
 		hz.setBounds(150, 77, 40, 20);
-		
+
 		hzDescription = new JLabel("average frequency");
 		hzDescription.setFont(Settings.getMouseFont());
 		basicPanel.add(hzDescription);
 		hzDescription.setForeground(Color.WHITE);
 		hzDescription.setBounds(74, 160, 220, 20);
-		
+
 		ms = new JLabel("ms");
 		ms.setFont(Settings.getMouseFont());
 		basicPanel.add(ms);
 		ms.setForeground(Color.WHITE);
 		ms.setBounds(435, 77, 40, 20);
-		
+
 		msDescription = new JLabel("avg update delay");
 		msDescription.setFont(Settings.getMouseFont());
 		basicPanel.add(msDescription);
 		msDescription.setForeground(Color.WHITE);
 		msDescription.setBounds(360, 160, 220, 20);
-		
 
 	}
-	
-	private void initializeDisplays(){
+
+	private void initializeDisplays() {
 		delayDisplay = new DelayDisplay();
 		basicPanel.add(delayDisplay);
 		delayDisplay.setBounds(361, 105, 200, 40);
-		
+
 		rateDisplay = new RateDisplay();
 		basicPanel.add(rateDisplay);
 		rateDisplay.setBounds(100, 105, 200, 40);
-		
+
 	}
-	
-	private void exit(){
+
+	private void exit() {
 		System.exit(0);
 	}
-	
+
 	/**
 	 * 
 	 * @return Returns Mouse (main window) instance
 	 */
-	public static Mouse getInstance(){
-		if(instance == null){
+	public static Mouse getInstance() {
+		if (instance == null) {
 			instance = new Mouse();
 		}
 		return instance;
 	}
-	
-	
-	
+
 	public static void main(String[] args) {
-		 Mouse.getInstance();
+		Mouse.getInstance();
 	}
 
 }
