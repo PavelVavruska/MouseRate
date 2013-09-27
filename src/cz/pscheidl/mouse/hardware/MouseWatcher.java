@@ -22,14 +22,14 @@ public class MouseWatcher implements Runnable {
 	@Override
 	public synchronized void run() {
 
-
-		Point oldMouseLocation = new Point(0, 0);
+		Point oldMouseLocation = MouseInfo.getPointerInfo().getLocation();
 
 		long lastUpdateTime = System.nanoTime();
 
 		while (isWatching) {
 
-			Point currentMouseLocation = MouseInfo.getPointerInfo().getLocation();
+			Point currentMouseLocation = MouseInfo.getPointerInfo()
+					.getLocation();
 
 			if (!oldMouseLocation.equals(currentMouseLocation)) {
 
@@ -51,9 +51,16 @@ public class MouseWatcher implements Runnable {
 		mouseWatcherThread.start();
 
 	}
-	
+
 	public boolean isWatching() {
 		return isWatching;
+	}
+	
+	public void destroyWatcher(){
+		isWatching = false;
+		mouseWatcherThread = null;
+		storage = null;
+		instance = null;
 	}
 
 	public static MouseWatcher getInstance() {
