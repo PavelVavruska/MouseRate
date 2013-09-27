@@ -2,20 +2,16 @@ package cz.pscheidl.mouse;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import cz.pscheidl.mouse.gui.DelayDisplay;
 import cz.pscheidl.mouse.gui.MouseDrag;
@@ -35,6 +31,7 @@ public class Mouse extends JFrame {
 	private static final long serialVersionUID = -2177780752366304229L;
 
 	private static Mouse instance = null;
+	private MouseWatcher mouseWatcher;
 
 	/**
 	 * GUI settings
@@ -78,11 +75,11 @@ public class Mouse extends JFrame {
 		 */
 		addListeners();
 
-		MouseWatcher watcher = MouseWatcher.getInstance();
-		watcher.getStorage().addMouseListener(delayDisplay);
-		watcher.getStorage().addMouseListener(rateDisplay);
+		mouseWatcher = MouseWatcher.getInstance();
+		mouseWatcher.getStorage().addMouseListener(delayDisplay);
+		mouseWatcher.getStorage().addMouseListener(rateDisplay);
 
-		watcher.startWatching();
+		mouseWatcher.startWatching();
 
 		/**
 		 * At the end, when all components are initialized, JFrame is made
@@ -185,6 +182,7 @@ public class Mouse extends JFrame {
 	}
 
 	private void exit() {
+		mouseWatcher.destroyWatcher();
 		System.exit(0);
 	}
 
