@@ -125,23 +125,6 @@ public class Mouse extends JFrame {
 		});
 		
 		/**
-		 * Re-takes focus for the main window
-		 */
-		addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				requestFocus();
-				
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				
-			}
-		});
-		
-		/**
 		 * Makes this window movable via mouse
 		 */
 		addMouseListener(new MouseDrag(this));
