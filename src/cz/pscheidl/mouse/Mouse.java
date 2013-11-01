@@ -20,185 +20,184 @@ import cz.pscheidl.mouse.hardware.MouseWatcher;
 import cz.pscheidl.mouse.settings.Settings;
 
 /**
- * Represents <b>main</b> application <b>window</b> and application entry point.<br/>
+ * Represents <b>main</b> application <b>window</b> and application entry
+ * point.<br/>
  * Follows <b>SINGLETON</b> design pattern.
- * 
+ *
  * @author Pavel Pscheidl
- * 
+ *
  */
 public class Mouse extends JFrame {
 
-	private static final long serialVersionUID = -2177780752366304229L;
+    private static final long serialVersionUID = -2177780752366304229L;
 
-	private static Mouse instance = null;
-	private MouseWatcher mouseWatcher;
+    private static Mouse instance = null;
+    private MouseWatcher mouseWatcher;
 
-	/**
-	 * GUI settings
-	 */
+    /**
+     * GUI settings
+     */
+    Dimension windowSize = new Dimension(600, 250);
 
-	Dimension windowSize = new Dimension(600, 250);
+    /*
+     * GUI Components
+     */
+    JPanel basicPanel;
+    JButton closeApp;
+    JLabel hz, ms, hzDescription, msDescription;
+    DelayDisplay delayDisplay;
+    RateDisplay rateDisplay;
 
-	/*
-	 * GUI Components
-	 */
+    private Mouse() {
 
-	JPanel basicPanel;
-	JButton closeApp;
-	JLabel hz, ms, hzDescription, msDescription;
-	DelayDisplay delayDisplay;
-	RateDisplay rateDisplay;
+        /**
+         * Basic window settings
+         */
+        setSize(windowSize);
+        setLocation(100, 100);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setUndecorated(true);
+        setLayout(null);
+        setFocusable(true);
+        setIconImage(Settings.getAppicon().getImage());
 
-	private Mouse() {
+        /**
+         * Initialize components Basic panel must be always initialized first
+         */
+        initializeBasicPanel();
+        initializeCloseApp();
+        initializeLabels();
+        initializeDisplays();
 
-		/**
-		 * Basic window settings
-		 */
-		setSize(windowSize);
-		setLocation(100, 100);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setUndecorated(true);
-		setLayout(null);
-		setFocusable(true);
-		setIconImage(Settings.getAppicon().getImage());
+        /**
+         * Listeners - to - add
+         */
+        addListeners();
 
-		/**
-		 * Initialize components Basic panel must be always initialized first
-		 */
-		initializeBasicPanel();
-		initializeCloseApp();
-		initializeLabels();
-		initializeDisplays();
+        mouseWatcher = MouseWatcher.getInstance();
+        mouseWatcher.getStorage().addMouseListener(delayDisplay);
+        mouseWatcher.getStorage().addMouseListener(rateDisplay);
 
-		/**
-		 * Listeners - to - add
-		 */
-		addListeners();
+        mouseWatcher.startWatching();
 
-		mouseWatcher = MouseWatcher.getInstance();
-		mouseWatcher.getStorage().addMouseListener(delayDisplay);
-		mouseWatcher.getStorage().addMouseListener(rateDisplay);
+        /**
+         * At the end, when all components are initialized, JFrame is made
+         * visible.
+         */
+        setVisible(true);
 
-		mouseWatcher.startWatching();
+    }
 
-		/**
-		 * At the end, when all components are initialized, JFrame is made
-		 * visible.
-		 */
-		setVisible(true);
+    /**
+     * Adds all necessary listeners. All listeners should be initialized and
+     * added here.
+     */
+    private void addListeners() {
 
-	}
+        /**
+         * Closes whole application after pressing ESCAPE KEY
+         */
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    exit();
+                }
+            }
+        });
 
-	/**
-	 * Adds all necessary listeners. All listeners should be initialized and
-	 * added here.
-	 */
-	private void addListeners() {
+        /**
+         * Makes this window movable via mouse
+         */
+        addMouseListener(new MouseDrag(this));
 
-		/**
-		 * Closes whole application after pressing ESCAPE KEY
-		 */
-		addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					exit();
-				}
-			}
-		});
+    }
 
-		/**
-		 * Makes this window movable via mouse
-		 */
-		addMouseListener(new MouseDrag(this));
+    private void initializeCloseApp() {
 
-	}
+        ImageIcon closeAppBg = new ImageIcon(getClass().getResource(
+                "/cz/pscheidl/mouse/files/closeAppBackground.png"));
+        closeApp = new JButton(closeAppBg);
+        closeApp.setBorder(null);
+        closeApp.setPressedIcon(null);
+        closeApp.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                exit();
+            }
+        });
+        basicPanel.add(closeApp);
+        closeApp.setBounds(10, 10, closeAppBg.getIconWidth(),
+                closeAppBg.getIconHeight());
 
-	private void initializeCloseApp() {
+    }
 
-		ImageIcon closeAppBg = new ImageIcon(getClass().getResource(
-				"/cz/pscheidl/mouse/files/closeAppBackground.png"));
-		closeApp = new JButton(closeAppBg);
-		closeApp.setBorder(null);
-		closeApp.setPressedIcon(null);
-		closeApp.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				exit();
-			}
-		});
-		basicPanel.add(closeApp);
-		closeApp.setBounds(10, 10, closeAppBg.getIconWidth(),
-				closeAppBg.getIconHeight());
+    private void initializeBasicPanel() {
+        basicPanel = new JPanel();
+        basicPanel.setSize(windowSize);
+        basicPanel.setBackground(Settings.getBgcolor());
+        basicPanel.setLayout(null);
+        add(basicPanel);
 
-	}
+    }
 
-	private void initializeBasicPanel() {
-		basicPanel = new JPanel();
-		basicPanel.setSize(windowSize);
-		basicPanel.setBackground(Settings.getBgcolor());
-		basicPanel.setLayout(null);
-		add(basicPanel);
+    private void initializeLabels() {
 
-	}
+        hz = new JLabel("Hz");
+        hz.setFont(Settings.getMouseFont());
+        basicPanel.add(hz);
+        hz.setForeground(Color.WHITE);
+        hz.setBounds(150, 77, 40, 20);
 
-	private void initializeLabels() {
+        hzDescription = new JLabel("average frequency");
+        hzDescription.setFont(Settings.getMouseFont());
+        basicPanel.add(hzDescription);
+        hzDescription.setForeground(Color.WHITE);
+        hzDescription.setBounds(74, 160, 220, 20);
 
-		hz = new JLabel("Hz");
-		hz.setFont(Settings.getMouseFont());
-		basicPanel.add(hz);
-		hz.setForeground(Color.WHITE);
-		hz.setBounds(150, 77, 40, 20);
+        ms = new JLabel("ms");
+        ms.setFont(Settings.getMouseFont());
+        basicPanel.add(ms);
+        ms.setForeground(Color.WHITE);
+        ms.setBounds(435, 77, 40, 20);
 
-		hzDescription = new JLabel("average frequency");
-		hzDescription.setFont(Settings.getMouseFont());
-		basicPanel.add(hzDescription);
-		hzDescription.setForeground(Color.WHITE);
-		hzDescription.setBounds(74, 160, 220, 20);
+        msDescription = new JLabel("avg update delay");
+        msDescription.setFont(Settings.getMouseFont());
+        basicPanel.add(msDescription);
+        msDescription.setForeground(Color.WHITE);
+        msDescription.setBounds(360, 160, 220, 20);
 
-		ms = new JLabel("ms");
-		ms.setFont(Settings.getMouseFont());
-		basicPanel.add(ms);
-		ms.setForeground(Color.WHITE);
-		ms.setBounds(435, 77, 40, 20);
+    }
 
-		msDescription = new JLabel("avg update delay");
-		msDescription.setFont(Settings.getMouseFont());
-		basicPanel.add(msDescription);
-		msDescription.setForeground(Color.WHITE);
-		msDescription.setBounds(360, 160, 220, 20);
+    private void initializeDisplays() {
+        delayDisplay = new DelayDisplay();
+        basicPanel.add(delayDisplay);
+        delayDisplay.setBounds(361, 105, 200, 40);
 
-	}
+        rateDisplay = new RateDisplay();
+        basicPanel.add(rateDisplay);
+        rateDisplay.setBounds(100, 105, 200, 40);
 
-	private void initializeDisplays() {
-		delayDisplay = new DelayDisplay();
-		basicPanel.add(delayDisplay);
-		delayDisplay.setBounds(361, 105, 200, 40);
+    }
 
-		rateDisplay = new RateDisplay();
-		basicPanel.add(rateDisplay);
-		rateDisplay.setBounds(100, 105, 200, 40);
+    private void exit() {
+        mouseWatcher.destroyWatcher();
+        System.exit(0);
+    }
 
-	}
+    /**
+     *
+     * @return Returns Mouse (main window) instance
+     */
+    public static Mouse getInstance() {
+        if (instance == null) {
+            instance = new Mouse();
+        }
+        return instance;
+    }
 
-	private void exit() {
-		mouseWatcher.destroyWatcher();
-		System.exit(0);
-	}
-
-	/**
-	 * 
-	 * @return Returns Mouse (main window) instance
-	 */
-	public static Mouse getInstance() {
-		if (instance == null) {
-			instance = new Mouse();
-		}
-		return instance;
-	}
-
-	public static void main(String[] args) {
-		Mouse.getInstance();
-	}
+    public static void main(String[] args) {
+        Mouse.getInstance();
+    }
 
 }

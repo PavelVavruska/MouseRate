@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PointerStorage {
-	
+
 	List<MouseListener> listeners = new ArrayList<MouseListener>();
-	
-	public PointerStorage(){
+
+	public PointerStorage() {
 
 	}
-	
+
 	public abstract void mouseRefreshed(long time);
-	
-	public synchronized void addMouseListener(MouseListener listener){
+
+	public synchronized void addMouseListener(MouseListener listener) {
 		listeners.add(listener);
 	}
-	
-	public synchronized void removeMouseListener(MouseListener listener){
+
+	public synchronized void removeMouseListener(MouseListener listener) {
 		listeners.remove(listener);
 	}
 

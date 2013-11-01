@@ -1,8 +1,7 @@
 package cz.pscheidl.mouse.util;
 
 public interface MouseListener {
-	
-	public void recieveMouseInfo(long[] mouseArray);
 
+	public void recieveMouseInfo(long[] mouseArray);
 
 }
