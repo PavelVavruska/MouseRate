@@ -33,11 +33,8 @@ public class Settings {
 						Settings.class.getClass().getResourceAsStream(
 								"/cz/pscheidl/mouse/files/mouseFont.ttf"));
 				mouseFont = mouseFont.deriveFont(14.0f);
-			} catch (FontFormatException e) {
+			} catch (            FontFormatException | IOException e) {
 				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-
 			}
 		}
 

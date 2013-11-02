@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class PointerStorage {
 
-	List<MouseListener> listeners = new ArrayList<MouseListener>();
+	List<MouseListener> listeners = new ArrayList<>();
 
 	public PointerStorage() {
 
