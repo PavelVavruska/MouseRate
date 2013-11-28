@@ -47,6 +47,7 @@ public class MouseDrag implements MouseListener, Runnable {
     @Override
     public void mouseReleased(MouseEvent e) {
         drag = false;
+        frame.repaint();
 
 
     }
