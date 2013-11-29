@@ -47,8 +47,6 @@ public class MouseDrag implements MouseListener, Runnable {
     @Override
     public void mouseReleased(MouseEvent e) {
         drag = false;
-        frame.repaint();
-
 
     }
 
@@ -87,8 +85,13 @@ public class MouseDrag implements MouseListener, Runnable {
     @Override
     public void run() {
         while (drag) {
-
-            drag();
+            drag();         
+            frame.repaint();
+            try {                
+                Thread.sleep(10); // 10 ms = 100 Hz                
+            } catch (InterruptedException e) {
+                e.printStackTrace();            
+            }
         }
 
     }
