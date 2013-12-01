@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import cz.pscheidl.mouse.gui.DelayDisplay;
 import cz.pscheidl.mouse.gui.MouseDrag;
 import cz.pscheidl.mouse.gui.RateDisplay;
+import cz.pscheidl.mouse.gui.GraphDisplay;
 import cz.pscheidl.mouse.hardware.MouseWatcher;
 import cz.pscheidl.mouse.settings.Settings;
 
@@ -47,6 +48,7 @@ public class Mouse extends JFrame {
     JLabel hz, ms, hzDescription, msDescription;
     DelayDisplay delayDisplay;
     RateDisplay rateDisplay;
+    GraphDisplay graphDisplay;
 
     private Mouse() {
 
@@ -75,9 +77,11 @@ public class Mouse extends JFrame {
         addListeners();
 
         mouseWatcher = MouseWatcher.getInstance();
+        mouseWatcher.getStorage().addMouseListener(graphDisplay);
         mouseWatcher.getStorage().addMouseListener(delayDisplay);
         mouseWatcher.getStorage().addMouseListener(rateDisplay);
-
+        
+        
         mouseWatcher.startWatching();
 
         /**
@@ -170,6 +174,10 @@ public class Mouse extends JFrame {
     }
 
     private void initializeDisplays() {
+        graphDisplay = new GraphDisplay();
+        basicPanel.add(graphDisplay);
+        graphDisplay.setBounds(0, 200, 600, 250);
+
         delayDisplay = new DelayDisplay();
         basicPanel.add(delayDisplay);
         delayDisplay.setBounds(361, 105, 200, 40);
