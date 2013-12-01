@@ -1,10 +1,7 @@
 package cz.pscheidl.mouse.gui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 import javax.swing.JPanel;
 import cz.pscheidl.mouse.settings.Settings;
@@ -22,15 +19,15 @@ public class GraphDisplay extends JPanel implements MouseListener {
 
 	private static final long serialVersionUID = -2920615231416789322L;
 	private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
-
+        private static final Color graphColor = Settings.getBgcolor().darker();
+        
 	private double averageDelay;
-        private final List<Long> averageHistory = new ArrayList<Long>();
-        private final Color graphColor;
-   
+        private final List<Double> averageHistory = new ArrayList<>();
+
 	public GraphDisplay() {
                 averageDelay = 0;
 		setIgnoreRepaint(false);
-                graphColor = Settings.getBgcolor().darker();
+
 	}
 
 	@Override
@@ -43,7 +40,7 @@ public class GraphDisplay extends JPanel implements MouseListener {
 		}
 		averageDelay = (delaySum / mouseArray.length)
 				/ NANOSECONDS_IN_MILLISECOND;
-                averageHistory.add((long) averageDelay);
+                averageHistory.add(averageDelay);
 		paint(getGraphics());
 
 	}
@@ -62,10 +59,10 @@ public class GraphDisplay extends JPanel implements MouseListener {
                 if (averageHistory.size()>0) {
                     step = (step/averageHistory.size()); // relative shrinking
                 }                
-                for (long delay : averageHistory) // graph history data
+                for (double delay : averageHistory) // graph history data
                 {
                         x++;
-                        currentValue = Math.round(delay);
+                        currentValue = (int) Math.round(delay);
                         if (lastValue == 0) // handling first input
                         {                             
                             lastValue=currentValue;
