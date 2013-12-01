@@ -19,10 +19,10 @@ public class GraphDisplay extends JPanel implements MouseListener {
 
 	private static final long serialVersionUID = -2920615231416789322L;
 	private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
-        private static final Color graphColor = Settings.getBgcolor().darker();
+        private static final Color graphColor = Settings.getBgcolor().darker(); 
+        private static final List<Double> averageHistory = new ArrayList<>();
         
-	private double averageDelay;
-        private final List<Double> averageHistory = new ArrayList<>();
+        private double averageDelay;
 
 	public GraphDisplay() {
                 averageDelay = 0;
