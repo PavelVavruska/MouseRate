@@ -18,14 +18,15 @@ public class MouseDrag implements MouseListener, Runnable {
     /**
      * Frame to move with
      */
-    private JFrame frame;
+    private final JFrame frame;
     private Point originalMousePos;
     private Point originalFramePos;
     private Thread dragThread;
 
-    boolean drag = false;
+    private boolean drag;
 
     public MouseDrag(JFrame frame) {
+        this.drag = false;
         this.frame = frame;
     }
 
@@ -77,7 +78,7 @@ public class MouseDrag implements MouseListener, Runnable {
         distanceX = 0 - (originalMousePos.x - currentMousePt.x);
         distanceY = 0 - (originalMousePos.y - currentMousePt.y);
         finalPoint = new Point(originalFramePos.x + distanceX,
-                originalFramePos.y + distanceY);
+                               originalFramePos.y + distanceY);
         frame.setLocation(finalPoint);
 
     }

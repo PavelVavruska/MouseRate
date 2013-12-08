@@ -33,22 +33,22 @@ public class Mouse extends JFrame {
     private static final long serialVersionUID = -2177780752366304229L;
 
     private static Mouse instance = null;
-    private MouseWatcher mouseWatcher;
-
+    private final MouseWatcher mouseWatcher;
+    
     /**
      * GUI settings
      */
-    Dimension windowSize = new Dimension(600, 250);
+    private final Dimension windowSize = new Dimension(600, 250);
 
     /*
      * GUI Components
      */
-    JPanel basicPanel;
-    JButton closeApp;
-    JLabel hz, ms, hzDescription, msDescription;
-    DelayDisplay delayDisplay;
-    RateDisplay rateDisplay;
-    GraphDisplay graphDisplay;
+    private JPanel basicPanel;
+    private JButton closeApp;
+    private JLabel hz, ms, hzDescription, msDescription;
+    private DelayDisplay delayDisplay;
+    private RateDisplay rateDisplay;
+    private GraphDisplay graphDisplay;
 
     private Mouse() {
 

@@ -23,8 +23,8 @@ public class RateDisplay extends JPanel implements MouseListener {
     private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
     private static final int MILLISECONDS_IN_SECOND = 1000;
 
-    private static Font displayFont;
-    private static NumberFormat avgFormat;
+    private static final Font displayFont;
+    private static final NumberFormat avgFormat;
 
     private double averageRate = 0;
 
@@ -38,7 +38,7 @@ public class RateDisplay extends JPanel implements MouseListener {
     }
 
     @Override
-    public void recieveMouseInfo(long[] mouseArray) {
+    public void recieveMouseInfo(final long[] mouseArray) {
 
         double delaySum = 0;
 
@@ -46,8 +46,8 @@ public class RateDisplay extends JPanel implements MouseListener {
             delaySum += delay;
         }
 
-        averageRate = MILLISECONDS_IN_SECOND
-                / ((delaySum / mouseArray.length) / NANOSECONDS_IN_MILLISECOND);
+        averageRate = delaySum / mouseArray.length / NANOSECONDS_IN_MILLISECOND;        
+        averageRate = MILLISECONDS_IN_SECOND / averageRate;
         paint(getGraphics());
 
     }

@@ -18,44 +18,45 @@ import cz.pscheidl.mouse.util.MouseListener;
  */
 public class DelayDisplay extends JPanel implements MouseListener {
 
-	private static final long serialVersionUID = -2920615231416789322L;
-	private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
-	private static Font displayFont;
-	private static NumberFormat avgFormat;
-        
-	private double averageDelay = 0;
-        
-        static{
-            displayFont = Settings.getMouseFont().deriveFont(36.0F);
-            avgFormat = new DecimalFormat("00.000");
+    private static final long serialVersionUID = -2920615231416789322L;
+    private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
+    private static final Font displayFont;
+    private static final NumberFormat avgFormat;
+
+    private double averageDelay;
+
+    static{
+        displayFont = Settings.getMouseFont().deriveFont(36.0F);
+        avgFormat = new DecimalFormat("00.000");
+    }
+
+    public DelayDisplay() {
+        this.averageDelay = 0;
+        setIgnoreRepaint(true);
+    }
+
+    @Override
+    public void recieveMouseInfo(long[] mouseArray) {
+
+        double delaySum = 0;
+
+        for (long delay : mouseArray) {
+                delaySum += delay;
         }
 
-	public DelayDisplay() {
-		setIgnoreRepaint(true);
-	}
+        averageDelay = delaySum / mouseArray.length;
+        averageDelay = averageDelay / NANOSECONDS_IN_MILLISECOND;
+        paint(getGraphics());
 
-	@Override
-	public void recieveMouseInfo(long[] mouseArray) {
+    }
 
-		double delaySum = 0;
-
-		for (long delay : mouseArray) {
-			delaySum += delay;
-		}
-
-		averageDelay = (delaySum / mouseArray.length)
-				/ NANOSECONDS_IN_MILLISECOND;
-		paint(getGraphics());
-
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		g.setColor(Settings.getBgcolor());
-		g.fillRect(0, 0, getWidth(), getHeight());
-		g.setColor(Color.WHITE);
-		g.setFont(displayFont);
-		g.drawString(avgFormat.format(averageDelay), 0, 40);
-	}
+    @Override
+    public void paint(Graphics g) {
+        g.setColor(Settings.getBgcolor());
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.WHITE);
+        g.setFont(displayFont);
+        g.drawString(avgFormat.format(averageDelay), 0, 40);
+    }
 
 }
